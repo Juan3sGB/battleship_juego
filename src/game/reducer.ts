@@ -1,6 +1,6 @@
-import { createInitialGameState } from './board';
 import { canFireAt, confirmFleet, hasLost, isFleetComplete, placeShip, receiveShot, removeShip } from './rules';
 import type { Coordinate, GameState, LastShot, Orientation, Player, PlayerIndex } from './types';
+import { createInitialGameState } from './board';
 
 export type GameAction =
   | { type: 'PLACE_SHIP'; size: number; start: Coordinate; orientation: Orientation }

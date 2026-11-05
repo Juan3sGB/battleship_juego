@@ -2,13 +2,14 @@ import type { Board as BoardGrid, Coordinate } from '../game/types';
 
 interface BoardProps {
   board: BoardGrid;
-  hideShips?: boolean;
+  hideShips?: boolean;                              // true para el tablero enemigo
   onCellClick?: (target: Coordinate) => void;
   onCellHover?: (target: Coordinate | null) => void;
-  preview?: { cells: Coordinate[]; valid: boolean };
+  preview?: { cells: Coordinate[]; valid: boolean }; // vista previa al colocar
 }
 
-const ICONS = { water: '', ship: '', hit: '💥', miss: '💧' } as const;
+// A = agua, B = barco, X = acierto, O = fallo
+const SYMBOLS = { water: 'A', ship: 'B', hit: 'X', miss: 'O' } as const;
 
 export default function Board({
   board,
@@ -17,37 +18,38 @@ export default function Board({
   onCellHover,
   preview,
 }: BoardProps) {
-  const interactive = onCellClick !== undefined;
-
   return (
     <div
-      className={`board${interactive ? ' board--interactive' : ''}`}
-      style={{ gridTemplateColumns: `repeat(${board.length}, var(--cell))` }}
       onMouseLeave={() => onCellHover?.(null)}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${board.length}, 2.5rem)`,
+        gap: 2,
+      }}
     >
       {board.map((cells, row) =>
         cells.map((cell, col) => {
+          // En el tablero enemigo, los barcos se ven como agua
           const visible = hideShips && cell === 'ship' ? 'water' : cell;
           const alreadyShot = visible === 'hit' || visible === 'miss';
 
           const inPreview =
             preview?.cells.some((c) => c.row === row && c.col === col) ?? false;
-          const previewClass = inPreview
+          const background = inPreview
             ? preview?.valid
-              ? ' cell--preview-ok'
-              : ' cell--preview-bad'
-            : '';
+              ? '#86efac'
+              : '#fca5a5'
+            : undefined;
 
           return (
             <button
               key={`${row}-${col}`}
-              className={`cell cell--${visible}${previewClass}`}
-              aria-label={`Fila ${row + 1}, columna ${col + 1}`}
-              disabled={!interactive || alreadyShot}
+              style={{ height: '2.5rem', background }}
+              disabled={!onCellClick || alreadyShot}
               onClick={() => onCellClick?.({ row, col })}
               onMouseEnter={() => onCellHover?.({ row, col })}
             >
-              {ICONS[visible]}
+              {SYMBOLS[visible]}
             </button>
           );
         })

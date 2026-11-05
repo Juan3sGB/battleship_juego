@@ -13,12 +13,12 @@ export function describeLastShot(
   const who = players[lastShot.by].name;
   const where = formatCoordinate(lastShot.at);
 
-  if (lastShot.result === 'miss') return `💧 ${who} disparó (${where}): ¡agua!`;
+  if (lastShot.result === 'miss') return `${who} disparó (${where}): ¡agua!`;
 
   if (lastShot.sankShipId) {
     const size = lastShot.sankShipId.replace('ship-', '');
-    return `🔥 ${who} disparó (${where}): ¡hundido! Cayó el barco de ${size}.`;
+    return `${who} disparó (${where}): ¡acierto y hundió el barco de ${size}!`;
   }
 
-  return `💥 ${who} disparó (${where}): ¡tocado!`;
+  return `${who} disparó (${where}): ¡acierto!`;
 }
